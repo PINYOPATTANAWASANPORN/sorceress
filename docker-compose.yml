@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  sorceress:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sorceress-mcp
+    restart: unless-stopped
+    ports:
+      - "8848:8848"
+    environment:
+      - ENVIRONMENT=development
+      - LOG_DIR=/app/logs
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8848/mcp', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
